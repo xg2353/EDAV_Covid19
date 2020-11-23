@@ -1,6 +1,6 @@
 # Data transformation
 
-```{r}
+```{r, echo = TRUE}
 library(tidyverse)
 library(plyr)
 confirmed <- read.csv("data/time_series_covid19_confirmed_global.csv")
@@ -15,3 +15,5 @@ deaths2 <- deaths %>%
 df <- join(confirmed2, recovered2)
 df <- join(df, deaths2)
 ```
+
+
