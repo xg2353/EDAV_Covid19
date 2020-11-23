@@ -11,11 +11,14 @@ deaths <- read.csv("data/time_series_covid19_deaths_global.csv")
 
 #format
 confirmed2 <- confirmed %>% 
-  pivot_longer(cols = !c(Province.State, Country.Region, Lat, Long), names_to = "Dates", values_to = "Confirmed")
+  pivot_longer(cols = !c(Province.State, Country.Region, Lat, Long), 
+               names_to = "Dates", values_to = "Confirmed")
 recovered2 <- recovered %>% 
-  pivot_longer(cols = !c(Province.State, Country.Region, Lat, Long), names_to = "Dates", values_to = "Recovered")
+  pivot_longer(cols = !c(Province.State, Country.Region, Lat, Long), 
+               names_to = "Dates", values_to = "Recovered")
 deaths2 <- deaths %>% 
-  pivot_longer(cols = !c(Province.State, Country.Region, Lat, Long), names_to = "Dates", values_to = "Deaths")
+  pivot_longer(cols = !c(Province.State, Country.Region, Lat, Long), 
+               names_to = "Dates", values_to = "Deaths")
 
 #join data sets
 df <- join(confirmed2, recovered2)
