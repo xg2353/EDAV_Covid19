@@ -1,6 +1,6 @@
 --- 
 title: "Covid 19"
-author: "Xue Gu2, Matthew Lim, Ryan Owen Mcnally"
+author: "Xue Gu, Matthew Lim, Ryan Owen Mcnally"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 ---
