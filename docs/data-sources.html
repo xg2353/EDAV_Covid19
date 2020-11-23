@@ -24,7 +24,7 @@
 <meta name="author" content="Xue Gu, Matthew Lim, Ryan Owen Mcnally" />
 
 
-<meta name="date" content="2020-11-22" />
+<meta name="date" content="2020-11-23" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -55,6 +55,69 @@
 <script src="libs/anchor-sections-1.0/anchor-sections.js"></script>
 
 
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -100,6 +163,10 @@
             <section class="normal" id="section-">
 <div id="data-sources" class="section level1" number="2">
 <h1><span class="header-section-number">Chapter 2</span> Data sources</h1>
+<p>We are interested in the number of global confirmed cases, recovered cases and deaths of the ongoing Covid-19 pandemic. The data sets are complied by the Center for System Science and Engineering (CSSE) at Johns Hopkins University (JHU) from a variety of data sources, including WHO, New York Times, Los Angles Times, etc. The aggregation of data from multiple data sources is necessary in our case because Covid-19 data is often inconsistent, sometimes unreliable among local media, especially when we are interested in the global data which requires constant monitoring and updates. So for this purpose of this project, we are treating the data from CSSE at JHU as our source of truth. In fact, it was developed to provide researchers, public health authorities and the general public with information to more easily track the outbreak as it unfolds.</p>
+<p>Our data sets are named <code>time_series_covid19_confirmed_global.csv</code>, <code>time_series_covid19_recovered_global.csv</code> and <code>time_series_covid19_deaths_global.csv</code> which contains times series data for the number of global confirmed cases, recovered cases and deaths. Specifically, each data set contains the exactly 269 rows and 309 columns. Each row first identifies a region in the world and reports its Covid-19 cases (confirmed or recovered or deaths depending on the data set) from January 21st, 2020 to November 21st, 2020 which is a total of 305 days. In addition, the names of the columns are the same across the three data sets: <strong>Province/State</strong>, <strong>Country/Region</strong>,<strong>Lat</strong>, <strong>Long</strong> <strong>1/21/20-11/21/20</strong>. Since all three data sets document the Covid-19 cases for the same 269 regions in the world, they have the same values in the <strong>Province/State</strong>, <strong>Country/Region</strong>, <strong>Lat</strong> and <strong>Long</strong> columns.</p>
+<p>The columns themselves are quite self-explanatory. <strong>Province/State</strong> is a categorical variable indicating the specific provinces or states in addition to the specific country or region. In fact, Australia, Canada, China, dependencies of the Netherlands, the UK, France and Denmark are reported at the province/state level, one example is Wuhan, a province of China, which is listed on its own row. All other countries, including the US are only listed under the country level,or <strong>Country/Region</strong> (also categorical). <strong>Lat</strong> and <strong>Long</strong> are numerical variables indicates the latitude and longitude of the listed regions in the world. As for the times series data, since the number of cases are discrete, the majority of our data are non-negative integers.</p>
+<p>As Covid-19 is an ongoing crisis, the CSSE team at JHU updates the three data sets once a day around 23:59 (UTC) so that they maintain the most up-to-date version of the data sets in their data repository. This might be an issue for us as we cannot backtrack previous versions of the data sets. So our solution is to download the data sets as they are (latest update on 11/21/20) and exercise caution to always maintain at least one original copy for each of our data sets during our analysis.</p>
 
 </div>
             </section>
