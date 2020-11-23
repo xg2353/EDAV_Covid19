@@ -1,5 +1,7 @@
 # Data transformation
 
+For this project we will be using three data sets from CCSE: time series data of confirmed, recovered, and death cases. They will all be global data sets indicating number of cases of each category per each country. We called the three data sets into three different variables first. Since the data had each date in individuall columns, we had to make it into a tidy form. We used pivot_longer function to collapse the dates into a single column. After we transformed the three data sets into their tidy forms, we put them together in a single data frame variable by using the join function. Below is the R code we used.
+
 ```{r, echo = TRUE}
 library(tidyverse)
 library(plyr)
