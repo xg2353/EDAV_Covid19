@@ -3,15 +3,21 @@
 ```{r, echo = TRUE}
 library(tidyverse)
 library(plyr)
+
+#read in data sets 
 confirmed <- read.csv("data/time_series_covid19_confirmed_global.csv")
 recovered <- read.csv("data/time_series_covid19_recovered_global.csv")
 deaths <- read.csv("data/time_series_covid19_deaths_global.csv")
+
+#format
 confirmed2 <- confirmed %>% 
   pivot_longer(cols = !c(Province.State, Country.Region, Lat, Long), names_to = "Dates", values_to = "Confirmed")
 recovered2 <- recovered %>% 
   pivot_longer(cols = !c(Province.State, Country.Region, Lat, Long), names_to = "Dates", values_to = "Recovered")
 deaths2 <- deaths %>% 
   pivot_longer(cols = !c(Province.State, Country.Region, Lat, Long), names_to = "Dates", values_to = "Deaths")
+
+#join data sets
 df <- join(confirmed2, recovered2)
 df <- join(df, deaths2)
 ```
