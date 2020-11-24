@@ -1,1 +1,20 @@
 # Missing values
+
+As we see in the below output, our datasets are pre cleaned and do not contain any missing values. It was useful to investigate this prior to beginning earnest work on the project as it provided us with deeper familiarity with available dimensions/datatypes/features. Given a full set of observations for many countries, the visualizations below show that we have no missing or null values in the full dataset.
+
+```{r, echo = TRUE}
+library(tidyverse)
+library(plyr)
+library(naniar)
+
+#read in data sets 
+confirmed <- read.csv("data/time_series_covid19_confirmed_global.csv")
+recovered <- read.csv("data/time_series_covid19_recovered_global.csv")
+deaths <- read.csv("data/time_series_covid19_deaths_global.csv")
+
+
+vis_miss(confirmed)
+vis_miss(recovered)
+vis_miss(deaths)
+
+```
