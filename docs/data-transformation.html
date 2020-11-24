@@ -163,6 +163,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="data-transformation" class="section level1" number="3">
 <h1><span class="header-section-number">Chapter 3</span> Data transformation</h1>
+<p>For this project we will be using three data sets from CCSE: time series data of confirmed, recovered, and death cases. They will all be global data sets indicating number of cases of each category per each country. We called the three data sets into three different variables first. Since the data had each date in individual columns, we had to make it into a tidy form. We used pivot_longer function to collapse the dates into a single column. After we transformed the three data sets into their tidy forms, we put them together in a single data frame variable by using the join function. Below is the R code we used.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="data-transformation.html#cb1-1" aria-hidden="true"></a><span class="kw">library</span>(tidyverse)</span>
 <span id="cb1-2"><a href="data-transformation.html#cb1-2" aria-hidden="true"></a><span class="kw">library</span>(plyr)</span>
 <span id="cb1-3"><a href="data-transformation.html#cb1-3" aria-hidden="true"></a></span>
