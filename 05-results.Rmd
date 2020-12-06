@@ -5,6 +5,9 @@
 library(tidyverse)
 library(ggplot2)
 library(directlabels)
+library(maps)
+library(maptools)
+library("ggmap")
 
 #read in data sets 
 confirmed <- read.csv("data/time_series_covid19_confirmed_global.csv")
@@ -51,4 +54,9 @@ ggplot(merged, aes(x = Dates, y = cases_per_death, group = Country.Region, colou
     scale_colour_discrete(guide = 'none') +
     geom_dl(aes(label = Country.Region), method=list("last.points", cex=.5)) 
 
+
+mapWorld <- borders("world", colour="gray50", fill="white")
+ggplot(data=deaths2, aes(x=Long, y=Lat, group=Country.Region, colour=Deaths)) +
+    mapWorld +
+    geom_point() 
 ```
