@@ -14,14 +14,10 @@ The missingness in Province/State is described in detail in the data source chap
 library(tidyverse)
 library(naniar)
 
-tidy_confirmed = read.csv("data/tidy_confirmed.csv", check.names = FALSE, stringsAsFactors = TRUE, na.strings="")
-tidy_confirmed = tidy_confirmed[c(2, 3, 4, 5, 6, 7)]
+tidy_confirmed = read.csv("data/tidy_confirmed.csv", check.names = FALSE, stringsAsFactors = TRUE, na.strings=c("", NA))
+tidy_recovered = read.csv("data/tidy_recovered.csv", check.names = FALSE, stringsAsFactors = TRUE, na.strings=c("", NA))
+tidy_deaths = read.csv("data/tidy_deaths.csv", check.names = FALSE, stringsAsFactors = TRUE, na.strings=c("", NA))
 
-tidy_recovered = read.csv("data/tidy_recovered.csv", check.names = FALSE, stringsAsFactors = TRUE, na.strings="")
-tidy_recovered = tidy_recovered[c(2, 3, 4, 5, 6, 7)]
-
-tidy_deaths = read.csv("data/tidy_deaths.csv", check.names = FALSE, stringsAsFactors = TRUE, na.strings="")
-tidy_deaths = tidy_deaths[c(2, 3, 4, 5, 6, 7)]
 
 #check missing values in 
 vis_miss(tidy_confirmed)
@@ -34,7 +30,6 @@ This is a very interesting view of the missing data. We used the fully joined da
 ```{r}
 library(naniar)
 full_df = read.csv("data/joined_df.csv", check.names = FALSE, stringsAsFactors = TRUE, na.strings=c("", NA))
-full_df = full_df[c(2, 3, 4, 5, 6, 7, 8, 9)]
 vis_miss(full_df)
 ```
 
