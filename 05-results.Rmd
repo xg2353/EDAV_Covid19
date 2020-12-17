@@ -5,115 +5,159 @@ editor_options:
 ---
 # Results
 
-```{r setup}
-#import necessary libraries 
+```{r}
 library(tidyverse)
 library(directlabels)
 library(maps)
 library(maptools)
 library(ggmap)
+library(plyr)
 ```
 
 ```{r}
 #read in data sets 
-confirmed = read.csv("data/time_series_covid19_confirmed_global.csv")
-recovered = read.csv("data/time_series_covid19_recovered_global.csv")
-deaths = read.csv("data/time_series_covid19_deaths_global.csv")
+confirmed <- read.csv("data/time_series_covid19_confirmed_global.csv")
+recovered <- read.csv("data/time_series_covid19_recovered_global.csv")
+deaths <- read.csv("data/time_series_covid19_deaths_global.csv")
 
 #formats
-confirmed2 = confirmed %>% 
+confirmed2 <- confirmed %>% 
+  filter(Province.State == '') %>%
   pivot_longer(cols = !c(Province.State, Country.Region, Lat, Long), 
                names_to = "Dates", values_to = "Confirmed")
-recovered2 = recovered %>% 
+recovered2 <- recovered %>% 
+  filter(Province.State == '') %>%
   pivot_longer(cols = !c(Province.State, Country.Region, Lat, Long), 
                names_to = "Dates", values_to = "Recovered")
-deaths2 = deaths %>% 
+deaths_all <- deaths %>% 
   pivot_longer(cols = !c(Province.State, Country.Region, Lat, Long), 
                names_to = "Dates", values_to = "Deaths")
 
-confirmed2$Dates = as.Date(confirmed2$Dates, format="X%m.%d.%y")
-recovered2$Dates = as.Date(recovered2$Dates, format="X%m.%d.%y")
-deaths2$Dates = as.Date(confirmed2$Dates, format="X%m.%d.%y")
+deaths2 <- deaths_all %>%
+  filter(Province.State == '')
+
+confirmed2$Dates <- as.Date(confirmed2$Dates, format="X%m.%d.%y")
+recovered2$Dates <- as.Date(recovered2$Dates, format="X%m.%d.%y")
+deaths2$Dates <- as.Date(confirmed2$Dates, format="X%m.%d.%y")
+
+merged <- join(confirmed2, recovered2)
+merged <- join(merged, deaths2)
+
+merged_lastday <- merged %>%
+  filter(Dates == '2020-11-21')
 ```
 
 ```{r}
-confirmedmax = confirmed2 %>%
+ylab <- c(2,4,6,8,10,12)
+confirmedmax <- confirmed2 %>%
   group_by(Country.Region) %>%
   top_n(1, Confirmed)
 
-confirmed_top5 = tail(confirmedmax[with(confirmedmax, order(Confirmed)),], n=5)$Country.Region
+confirmed_top5 <- tail(confirmedmax[with(confirmedmax, order(Confirmed)),], n=5)$Country.Region
 
-df_5confirmed = confirmed2 %>% filter(Country.Region==confirmed_top5)
+df_5confirmed <- confirmed2 %>% filter(Country.Region==confirmed_top5)
 
 ggplot(df_5confirmed, aes(x = Dates, y = Confirmed, group = Country.Region, colour = Country.Region)) + 
     geom_line() +
     scale_colour_discrete(guide = 'none') +
-    geom_dl(aes(label = Country.Region), method=list("last.points", cex=.5))
+    geom_dl(aes(label = Country.Region), method=list("last.points", cex=.5)) +
+    scale_y_continuous(labels = paste0(ylab, "M"), breaks = 10^6 * ylab) +
+    labs(title = "Confirmed cases of top 5 countries over time") +
+    theme_grey(16)
 ```
 
 The graph above shows the number of confirmed cases of the five countries with the most confirmed cases. The five countries are United States, India, Brazil, Russia, and France. From the graph, we see that the slope of the lines for all five countries (except Russia) do not plateau but rather increases, meaning that the spread of the pandemic is getting worse and worse. 
 
 ```{r}
-recoveredmax = recovered2 %>%
+ylab <- c(2, 4, 6, 8, 10)
+
+recoveredmax <- recovered2 %>%
   group_by(Country.Region) %>%
   top_n(1, Recovered)
 
-recovered_top5 = tail(recoveredmax[with(recoveredmax, order(Recovered)),], n=5)$Country.Region
+recovered_top5 <- tail(recoveredmax[with(recoveredmax, order(Recovered)),], n=5)$Country.Region
 
-df_5recovered = recovered2 %>% filter(Country.Region==confirmed_top5)
+df_5recovered <- recovered2 %>% filter(Country.Region==confirmed_top5)
 
 ggplot(df_5recovered, aes(x = Dates, y = Recovered, group = Country.Region, colour = Country.Region)) + 
     geom_line() +
     scale_colour_discrete(guide = 'none') +
-    geom_dl(aes(label = Country.Region), method=list("last.points", cex=.5)) 
+    geom_dl(aes(label = Country.Region), method=list("last.points", cex=.5)) +
+    scale_y_continuous(labels = paste0(ylab, "M"), breaks = 10^6 * ylab) +
+    labs(title = "Recovered cases of top 5 countries over time") +
+    theme_grey(16)
 ```
 
 The graph above shows the number of recovered cases of the five countries with the most recovered cases. We see the same five countries, United States, India, Brazil, Russia, and France. Even though the top five countries are the same, there are more recovered cases in India and Brazil compared to the United States. This is somewhat unexpected since US exceeded India and Brazil in the number of confirmed cases by approximately 3 million and 6 million, yet there are much fewer recovered cases in the United States. 
 
 ```{r}
-deathsmax = deaths2 %>%
+deathsmax <- deaths2 %>%
   group_by(Country.Region) %>%
   top_n(1, Deaths)
 
-deaths_top5 = tail(deathsmax[with(deathsmax, order(Deaths)),], n=5)$Country.Region
+deaths_top5 <- tail(deathsmax[with(deathsmax, order(Deaths)),], n=6)$Country.Region
 
-df_5deaths = deaths2 %>% filter(Country.Region==deaths_top5)
+df_5deaths <- deaths2 %>% filter(Country.Region==unique(deaths_top5))
+
+ylab <- c(50, 100, 150, 200, 250)
 
 ggplot(df_5deaths, aes(x = Dates, y = Deaths, group = Country.Region, colour = Country.Region)) + 
     geom_line() +
     scale_colour_discrete(guide = 'none') +
-    geom_dl(aes(label = Country.Region), method=list("last.points", cex=.5)) 
+    geom_dl(aes(label = Country.Region), method=list("last.points", cex=.5)) +
+    scale_y_continuous(labels = paste0(ylab, "K"), breaks = 10^3 * ylab) +
+    labs(title = "Deaths of top 5 countries over time") +
+    theme_grey(16)
 ```
 
 The graph above shows the number of deaths of the five countries with the most deaths. As we saw from the previous graph of the confirmed cases, we can see that the US, India, and Brazil have made the top 3 here again since more confirmed cases would naturally lead to more deaths. One interesting thing that we see here is that Mexico, which seemed to have not as many cases as US, India, or Brazil, shows a high number of deaths. 
 
 ```{r}
-mapWorld = borders("world", colour="gray50", fill="white")
-ggplot(data=deaths2, aes(x=Long, y=Lat, group=Country.Region, colour=Deaths)) +
+mapWorld <- borders("world", colour="gray50", fill="white")
+ggplot(data=deaths_all, aes(x=Long, y=Lat, group=Country.Region, colour=Deaths)) +
     mapWorld +
     geom_point() 
 ```
 
 The plot above is the dot plot of the world map representing number of deaths in each country. As we have discovered from the previous paragraph, we can see that the top three countries, the United States, India, and Brazil display bright blue dots. 
 
-```{r}
-merged = merge(confirmed2, deaths2, by = c("Country.Region","Dates"))
-merged$death_per_cases = merged$Deaths / merged$Confirmed
-is.na(merged$death_per_cases)=sapply(merged$death_per_cases, is.infinite)
-merged$death_per_cases[is.na(merged$death_per_cases)]=0
+```{r, echo = TRUE}
 
-dpcmax = merged %>%
-  group_by(Country.Region) %>%
-  top_n(1, death_per_cases)
-
-dpc_top5 = tail(dpcmax[with(dpcmax, order(death_per_cases)),], n=5)$Country.Region
-
-df_5dpc = merged %>% filter(Country.Region==dpc_top5)
+merged_lastday <- merged_lastday %>%
+  mutate(death_per_cases = Deaths/Confirmed)
+dpc_top5 <- tail(merged_lastday[with(merged_lastday, order(death_per_cases)),], n=5)$Country.Region
+merged <- merged %>% 
+  mutate(death_per_cases = Deaths/Confirmed)
+df_5dpc <- merged %>% 
+  filter(Country.Region %in% dpc_top5)
+  
 
 ggplot(df_5dpc, aes(x = Dates, y = death_per_cases, group = Country.Region, colour = Country.Region)) + 
     geom_line() +
     scale_colour_discrete(guide = 'none') +
-    geom_dl(aes(label = Country.Region), method=list("last.points", cex=.5)) 
+    geom_dl(aes(label = Country.Region), method=list("last.points", cex=.5)) +
+    labs(title = "Death per confirmed cases for top 5 countries",
+         y = "Death per confirmed cases (%)")
 ```
 
-We are now looking at the cases per death 
+We are now looking at the cases per death for the five countries with the highest rates. We see that Yemen has the highest death rate followed by MS Zaandam. The graph seems to plateau off, so we went back to the data to check and found out that the number of confirmed cases and deaths don't change starting at a certain point. Since there were no changes made, we may conclude that there were no more new cases of the virus found after that date. (Or it could be that the data wasn't updated after that date and CSSE copied and pasted the number of cases to fill in the missing values)s
+
+
+```{r}
+top_countries <- merged_lastday %>%
+  filter(Country.Region %in% c("US", "India", "Brazil", "Mexico", "United Kingdom", "Russia", "France")) %>%
+  select(c(Country.Region, Dates, Confirmed, Recovered, Deaths)) %>%
+  pivot_longer(cols= !c(Country.Region, Dates), 
+               names_to = 'Category', values_to = 'Count')
+
+ylab <- c(2,4,6,8,10,12)
+ggplot(top_countries, aes(fct_relevel(Country.Region, "US", "India", "Brazil", "France", "Russia", "United Kingdom", "Mexico"), Count, fill = fct_relevel(Category, 'Confirmed', 'Recovered', 'Deaths'))) + 
+  geom_bar(position = 'dodge', stat = 'identity') +
+  scale_y_continuous(labels = paste0(ylab, "K"), breaks = 10^6 * ylab) +
+  labs(title = "Confirmed, recovered, deaths of top countries",
+       x= "Country", fill = "Category") 
+  
+```
+
+Here we have a bar chart of confirmed, recovered, and death cases of the countries that we found in the previous plots. In this bar chart, it's a lot easier to compare the counts between the three categories within each country. However, since the number of deaths is relatively small compared to that of confirmed and recovered, it's a little hard to compare deaths to confirmed and recovered. 
+
