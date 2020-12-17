@@ -15,7 +15,6 @@ confirmed = read.csv("data/time_series_covid19_confirmed_global.csv", check.name
 recovered = read.csv("data/time_series_covid19_recovered_global.csv", check.names = FALSE)
 deaths = read.csv("data/time_series_covid19_deaths_global.csv", check.names = FALSE)
 
-
 format_dates = function(x){
   to_date = as.Date(x, "%m/%d/%y")
   return(to_date)
@@ -23,16 +22,19 @@ format_dates = function(x){
 
 #pivot datasets into tidy data and format dates as Data objects
 tidy_confirmed = confirmed %>% 
+  filter(Province.State=='')
   pivot_longer(cols = !c("Province/State", "Country/Region", "Lat", "Long"), 
                names_to = "Dates", values_to = "Confirmed", names_transform = list(Date = format_dates))
 write.csv(tidy_confirmed,"data/tidy_confirmed.csv")
 
 tidy_recovered = recovered %>% 
+  filter(Province.State=='')
   pivot_longer(cols = !c("Province/State", "Country/Region", "Lat", "Long"), 
                names_to = "Dates", values_to = "Recovered", names_transform = list(Date = format_dates))
 write.csv(tidy_recovered,"data/tidy_recovered.csv")
 
 tidy_deaths = deaths %>% 
+  filter(Province.State=='')
   pivot_longer(cols = !c("Province/State", "Country/Region", "Lat", "Long"), 
                names_to = "Dates", values_to = "Deaths", names_transform = list(Date = format_dates))
 write.csv(tidy_deaths,"data/tidy_deaths.csv")
