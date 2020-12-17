@@ -21,8 +21,7 @@ recovered <- read.csv("data/time_series_covid19_recovered_global.csv")
 deaths <- read.csv("data/time_series_covid19_deaths_global.csv")
 
 #formats
-confirmed2 <- confirmed %>% 
-  filter(Province.State == '') %>%
+confirmed_all <- confirmed %>% 
   pivot_longer(cols = !c(Province.State, Country.Region, Lat, Long), 
                names_to = "Dates", values_to = "Confirmed")
 recovered2 <- recovered %>% 
@@ -33,6 +32,8 @@ deaths_all <- deaths %>%
   pivot_longer(cols = !c(Province.State, Country.Region, Lat, Long), 
                names_to = "Dates", values_to = "Deaths")
 
+confirmed2 <- confirmed_all %>%
+  filter(Province.State == '')
 deaths2 <- deaths_all %>%
   filter(Province.State == '')
 
@@ -48,15 +49,15 @@ merged_lastday <- merged %>%
 ```
 
 ```{r}
-ylab <- c(2,4,6,8,10,12)
 confirmedmax <- confirmed2 %>%
   group_by(Country.Region) %>%
   top_n(1, Confirmed)
 
 confirmed_top5 <- tail(confirmedmax[with(confirmedmax, order(Confirmed)),], n=5)$Country.Region
 
-df_5confirmed <- confirmed2 %>% filter(Country.Region==confirmed_top5)
+df_5confirmed <- confirmed2 %>% filter(Country.Region %in% confirmed_top5)
 
+ylab <- c(2,4,6,8,10,12)
 ggplot(df_5confirmed, aes(x = Dates, y = Confirmed, group = Country.Region, colour = Country.Region)) + 
     geom_line() +
     scale_colour_discrete(guide = 'none') +
@@ -77,7 +78,7 @@ recoveredmax <- recovered2 %>%
 
 recovered_top5 <- tail(recoveredmax[with(recoveredmax, order(Recovered)),], n=5)$Country.Region
 
-df_5recovered <- recovered2 %>% filter(Country.Region==confirmed_top5)
+df_5recovered <- recovered2 %>% filter(Country.Region %in% confirmed_top5)
 
 ggplot(df_5recovered, aes(x = Dates, y = Recovered, group = Country.Region, colour = Country.Region)) + 
     geom_line() +
@@ -97,7 +98,7 @@ deathsmax <- deaths2 %>%
 
 deaths_top5 <- tail(deathsmax[with(deathsmax, order(Deaths)),], n=6)$Country.Region
 
-df_5deaths <- deaths2 %>% filter(Country.Region==unique(deaths_top5))
+df_5deaths <- deaths2 %>% filter(Country.Region %in% unique(deaths_top5))
 
 ylab <- c(50, 100, 150, 200, 250)
 
@@ -115,8 +116,9 @@ The graph above shows the number of deaths of the five countries with the most d
 ```{r}
 mapWorld <- borders("world", colour="gray50", fill="white")
 ggplot(data=deaths_all, aes(x=Long, y=Lat, group=Country.Region, colour=Deaths)) +
-    mapWorld +
-    geom_point() 
+  mapWorld +
+  geom_point() +
+  labs(title= "Dot plot representing number of deaths on a world map")
 ```
 
 The plot above is the dot plot of the world map representing number of deaths in each country. As we have discovered from the previous paragraph, we can see that the top three countries, the United States, India, and Brazil display bright blue dots. 
@@ -137,7 +139,7 @@ ggplot(df_5dpc, aes(x = Dates, y = death_per_cases, group = Country.Region, colo
     scale_colour_discrete(guide = 'none') +
     geom_dl(aes(label = Country.Region), method=list("last.points", cex=.5)) +
     labs(title = "Death per confirmed cases for top 5 countries",
-         y = "Death per confirmed cases (%)")
+         y = "Death per confirmed cases (%)") + theme_grey(16)
 ```
 
 We are now looking at the cases per death for the five countries with the highest rates. We see that Yemen has the highest death rate followed by MS Zaandam. The graph seems to plateau off, so we went back to the data to check and found out that the number of confirmed cases and deaths don't change starting at a certain point. Since there were no changes made, we may conclude that there were no more new cases of the virus found after that date. (Or it could be that the data wasn't updated after that date and CSSE copied and pasted the number of cases to fill in the missing values)s
@@ -155,9 +157,38 @@ ggplot(top_countries, aes(fct_relevel(Country.Region, "US", "India", "Brazil", "
   geom_bar(position = 'dodge', stat = 'identity') +
   scale_y_continuous(labels = paste0(ylab, "K"), breaks = 10^6 * ylab) +
   labs(title = "Confirmed, recovered, deaths of top countries",
-       x= "Country", fill = "Category") 
+       x= "Country", fill = "Category")
   
 ```
 
 Here we have a bar chart of confirmed, recovered, and death cases of the countries that we found in the previous plots. In this bar chart, it's a lot easier to compare the counts between the three categories within each country. However, since the number of deaths is relatively small compared to that of confirmed and recovered, it's a little hard to compare deaths to confirmed and recovered. 
+
+```{r}
+theme_dotplot <- theme_bw(14) + 
+  theme(axis.text.y = element_text(size = rel(.75)),
+        axis.ticks.y = element_blank(),
+        axis.title.x = element_text(size = rel(.75)),
+        panel.grid.major.x = element_blank(),
+        panel.grid.major.y = element_line(size = 0.5),
+        panel.grid.minor.x = element_blank())
+
+xlab <- c(2,4,6,8,10,12,14)
+merged_lastday %>%
+  select(Country.Region, Confirmed, Recovered) %>% 
+  arrange(desc(Confirmed)) %>% 
+  top_n(25) %>%
+  pivot_longer(!Country.Region, names_to = 'Category', values_to = 'Count') %>%
+  ggplot(aes(Count, 
+             fct_reorder2(Country.Region, Category == "Confirmed", Count, 
+                          .desc = FALSE),
+             color = Category)) +
+  geom_line(aes(group = Country.Region)) +
+  geom_point(size=1) +
+  theme_dotplot +
+  labs(title= "Cleveland dot plot of confirmed and \nrecovered for top 20 countries",
+       y= "Country") + 
+  scale_x_continuous(labels = paste0(xlab, "M"), breaks = 10^6 * xlab)
+```
+
+Here we have a Cleveland dotplot that shows number of confirmed and recovered cases for 20 countries with the most confirmed cases. By using this Cleveland dotplot, it is much easier to see multiple countries in a single ploot compared to the bar chart we had above. In this plot, we can see that the United States has a large difference between the number of confirmed and the number of recovered cases while other countries seem to have relatively smaller gaps.
 
