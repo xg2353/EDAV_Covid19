@@ -10,6 +10,7 @@ However, we have missing data in categorical variables Province/State for certai
 
 
 ```{r}
+library(naniar)
 full_df = read.csv("data/joined_df.csv", check.names = FALSE, stringsAsFactors = TRUE, na.strings=c("", NA))
 full_df = full_df[c(2, 3, 4, 5, 6, 7, 8, 9)]
 vis_miss(full_df)
