@@ -10,7 +10,7 @@ library(tidyverse)
 library(directlabels)
 library(maps)
 library(maptools)
-library("ggmap")
+library(ggmap)
 ```
 
 ```{r}
@@ -95,7 +95,7 @@ ggplot(data=deaths2, aes(x=Long, y=Lat, group=Country.Region, colour=Deaths)) +
 
 The plot above is the dot plot of the world map representing number of deaths in each country. As we have discovered from the previous paragraph, we can see that the top three countries, the United States, India, and Brazil display bright blue dots. 
 
-```{r, echo = TRUE}
+```{r}
 merged <- merge(confirmed2, deaths2, by = c("Country.Region","Dates"))
 merged$death_per_cases <- merged$Deaths / merged$Confirmed
 is.na(merged$death_per_cases)<-sapply(merged$death_per_cases, is.infinite)

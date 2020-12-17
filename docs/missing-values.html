@@ -24,7 +24,7 @@
 <meta name="author" content="Xue Gu, Matthew Lim, Ryan Owen Mcnally" />
 
 
-<meta name="date" content="2020-11-23" />
+<meta name="date" content="2020-12-17" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -164,22 +164,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="missing-values" class="section level1" number="4">
 <h1><span class="header-section-number">Chapter 4</span> Missing values</h1>
 <p>As we see in the below output, our datasets are pre cleaned and do not contain any missing values. It was useful to investigate this prior to beginning earnest work on the project as it provided us with deeper familiarity with available dimensions/data types/features. Given a full set of observations for many countries, the visualizations below show that we have no missing or null values in the full data set.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="missing-values.html#cb1-1" aria-hidden="true"></a><span class="kw">library</span>(plyr)</span>
-<span id="cb1-2"><a href="missing-values.html#cb1-2" aria-hidden="true"></a><span class="kw">library</span>(tidyverse)</span>
-<span id="cb1-3"><a href="missing-values.html#cb1-3" aria-hidden="true"></a><span class="kw">library</span>(naniar)</span>
-<span id="cb1-4"><a href="missing-values.html#cb1-4" aria-hidden="true"></a></span>
-<span id="cb1-5"><a href="missing-values.html#cb1-5" aria-hidden="true"></a><span class="co">#read in data sets </span></span>
-<span id="cb1-6"><a href="missing-values.html#cb1-6" aria-hidden="true"></a>confirmed &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;data/time_series_covid19_confirmed_global.csv&quot;</span>)</span>
-<span id="cb1-7"><a href="missing-values.html#cb1-7" aria-hidden="true"></a>recovered &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;data/time_series_covid19_recovered_global.csv&quot;</span>)</span>
-<span id="cb1-8"><a href="missing-values.html#cb1-8" aria-hidden="true"></a>deaths &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;data/time_series_covid19_deaths_global.csv&quot;</span>)</span>
-<span id="cb1-9"><a href="missing-values.html#cb1-9" aria-hidden="true"></a></span>
-<span id="cb1-10"><a href="missing-values.html#cb1-10" aria-hidden="true"></a></span>
-<span id="cb1-11"><a href="missing-values.html#cb1-11" aria-hidden="true"></a><span class="kw">vis_miss</span>(confirmed)</span></code></pre></div>
-<p><img src="finalproj_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="missing-values.html#cb2-1" aria-hidden="true"></a><span class="kw">vis_miss</span>(recovered)</span></code></pre></div>
-<p><img src="finalproj_files/figure-html/unnamed-chunk-4-2.png" width="672" /></p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="missing-values.html#cb3-1" aria-hidden="true"></a><span class="kw">vis_miss</span>(deaths)</span></code></pre></div>
-<p><img src="finalproj_files/figure-html/unnamed-chunk-4-3.png" width="672" /></p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="missing-values.html#cb2-1" aria-hidden="true"></a><span class="co">#library(plyr)</span></span>
+<span id="cb2-2"><a href="missing-values.html#cb2-2" aria-hidden="true"></a><span class="kw">library</span>(tidyverse)</span>
+<span id="cb2-3"><a href="missing-values.html#cb2-3" aria-hidden="true"></a><span class="kw">library</span>(naniar)</span>
+<span id="cb2-4"><a href="missing-values.html#cb2-4" aria-hidden="true"></a></span>
+<span id="cb2-5"><a href="missing-values.html#cb2-5" aria-hidden="true"></a><span class="co">#read in data sets </span></span>
+<span id="cb2-6"><a href="missing-values.html#cb2-6" aria-hidden="true"></a>confirmed &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;data/time_series_covid19_confirmed_global.csv&quot;</span>)</span>
+<span id="cb2-7"><a href="missing-values.html#cb2-7" aria-hidden="true"></a>recovered &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;data/time_series_covid19_recovered_global.csv&quot;</span>)</span>
+<span id="cb2-8"><a href="missing-values.html#cb2-8" aria-hidden="true"></a>deaths &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;data/time_series_covid19_deaths_global.csv&quot;</span>)</span>
+<span id="cb2-9"><a href="missing-values.html#cb2-9" aria-hidden="true"></a></span>
+<span id="cb2-10"><a href="missing-values.html#cb2-10" aria-hidden="true"></a></span>
+<span id="cb2-11"><a href="missing-values.html#cb2-11" aria-hidden="true"></a><span class="kw">vis_miss</span>(confirmed)</span></code></pre></div>
+<p><img src="finalproj_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="missing-values.html#cb3-1" aria-hidden="true"></a><span class="kw">vis_miss</span>(recovered)</span></code></pre></div>
+<p><img src="finalproj_files/figure-html/unnamed-chunk-6-2.png" width="672" /></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="missing-values.html#cb4-1" aria-hidden="true"></a><span class="kw">vis_miss</span>(deaths)</span></code></pre></div>
+<p><img src="finalproj_files/figure-html/unnamed-chunk-6-3.png" width="672" /></p>
 
 </div>
             </section>

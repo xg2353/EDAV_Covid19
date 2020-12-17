@@ -1,3 +1,10 @@
 # Interactive component
 
+<script src="https://d3js.org/d3.v6.min.js"></script>
 
+<button id="start" style="position: absolute; margin-left: 6px; margin-top: 4px;">Start Animation</button>
+<button id="reset" style="position: absolute; margin-left: 150px; margin-top: 4px">Reset</button>
+
+<div id="plot"></div>
+
+<script src="scripts/draw_total_cases.js"></script>
