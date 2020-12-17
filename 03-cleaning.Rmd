@@ -1,30 +1,48 @@
 # Data transformation
 
-For this project we will be using three data sets from CCSE: time series data of confirmed, recovered, and death cases. They will all be global data sets indicating number of cases of each category per each country. We called the three data sets into three different variables first. Since the data had each date in individual columns, we had to make it into a tidy form. We used pivot_longer function to collapse the dates into a single column. After we transformed the three data sets into their tidy forms, we put them together in a single data frame variable by using the join function. Below is the R code we used.
+For this project we will be using three data sets from CCSE: time series data of confirmed, recovered, and death cases. They will all be global data sets indicating number of cases of each category per each country. We called the three data sets into three different variables first. Since the data had each date in individual columns, we had to make it into a tidy form. We used pivot_longer function to collapse the dates into a single column. After we transformed the three data sets into their tidy forms, we put them together in a single data frame variable by using the join function. 
 
-```{r, echo = TRUE}
+```{r}
 library(tidyverse)
 library(plyr)
 
 #read in data sets 
-confirmed <- read.csv("data/time_series_covid19_confirmed_global.csv")
-recovered <- read.csv("data/time_series_covid19_recovered_global.csv")
-deaths <- read.csv("data/time_series_covid19_deaths_global.csv")
+confirmed = read.csv("data/time_series_covid19_confirmed_global.csv", check.names = FALSE)
+recovered = read.csv("data/time_series_covid19_recovered_global.csv", check.names = FALSE)
+deaths = read.csv("data/time_series_covid19_deaths_global.csv", check.names = FALSE)
 
-#format
-confirmed2 <- confirmed %>% 
-  pivot_longer(cols = !c(Province.State, Country.Region, Lat, Long), 
-               names_to = "Dates", values_to = "Confirmed")
-recovered2 <- recovered %>% 
-  pivot_longer(cols = !c(Province.State, Country.Region, Lat, Long), 
-               names_to = "Dates", values_to = "Recovered")
-deaths2 <- deaths %>% 
-  pivot_longer(cols = !c(Province.State, Country.Region, Lat, Long), 
-               names_to = "Dates", values_to = "Deaths")
+
+format_dates = function(x){
+  to_date = as.Date(x, "%m/%d/%y")
+  return(to_date)
+}
+
+#pivot datasets into tidy data and format dates as Data objects
+tidy_confirmed = confirmed %>% 
+  pivot_longer(cols = !c("Province/State", "Country/Region", "Lat", "Long"), 
+               names_to = "Dates", values_to = "Confirmed", names_transform = list(Date = format_dates))
+tidy_recovered = recovered %>% 
+  pivot_longer(cols = !c("Province/State", "Country/Region", "Lat", "Long"), 
+               names_to = "Dates", values_to = "Recovered", names_transform = list(Date = format_dates))
+tidy_deaths = deaths %>% 
+  pivot_longer(cols = !c("Province/State", "Country/Region", "Lat", "Long"), 
+               names_to = "Dates", values_to = "Deaths", names_transform = list(Date = format_dates))
 
 #join data sets
-df <- join(confirmed2, recovered2)
-df <- join(df, deaths2)
+df = join(tidy_confirmed, tidy_recovered)
+df = join(df, tidy_deaths)
+```
+
+```{r}
+#retrieve end of month dates
+month_end = c("1/31/20","2/29/20", "3/31/20", "4/30/20", "5/31/20", "6/30/20", "7/31/20", "8/31/20", "9/30/20", "10/31/20")
+
+
+monthly_df = confirmed[c("Province/State", "Country/Region", month_end)]
+tidy_month = monthly_df %>% pivot_longer(!c(1,2), names_to = "Date", names_transform = list(Date = format_dates), values_to = "Cases")
+
+month_end_date = seq(as.Date("2020-02-01"),length=10,by="months")-1
+month_total = apply(monthly_df[month_end], 2, sum)
 ```
 
 
