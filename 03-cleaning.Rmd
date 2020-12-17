@@ -13,12 +13,15 @@ deaths <- read.csv("data/time_series_covid19_deaths_global.csv")
 
 #format
 confirmed2 <- confirmed %>% 
+  filter(Province.State=='')
   pivot_longer(cols = !c(Province.State, Country.Region, Lat, Long), 
                names_to = "Dates", values_to = "Confirmed")
 recovered2 <- recovered %>% 
+  filter(Province.State=='')
   pivot_longer(cols = !c(Province.State, Country.Region, Lat, Long), 
                names_to = "Dates", values_to = "Recovered")
 deaths2 <- deaths %>% 
+  filter(Province.State=='')
   pivot_longer(cols = !c(Province.State, Country.Region, Lat, Long), 
                names_to = "Dates", values_to = "Deaths")
 
