@@ -6,8 +6,30 @@ We also choose to visualize the missingness of our data using the joined datafra
 
 The visualizations below show that we have no missing numerical variables in the three data sets. In other words, all longitude, latitude Dates and cases records (whether they are confirmed, recovered or deaths) are 100 % present for each country on each date.
 
-However, we have missing data in categorical variables Province/State for certain countries/regions. The missing date in Province/State consists 11.6% of the data  The missingness in Province/State is described in detail in the data source chapter as we explained the data collection process. To iterate, due to different characteristics of each country or region, only Australia, Canada, China, dependencies of the Netherlands, the UK, France and Denmark are reported at the province/state level. This pattern of missingness might be able to give more detailed distribution of Covid-19 cases of some countries over others which might in turn gives interesting geographical patterns. 
+However, we have missing data in categorical variables Province/State for certain countries/regions. For both tidy_confirmed and tidy_deaths dataframe, the missing data in Province/State consists 11.6% of the data, 69.89% of the variable itself. For tidy_recovered, with a smaller number of countries/regions, the missing data in Province/State consists 12.3% of the data, 73.83% of the variable itself which is a minor increase compared to other two data sets. 
 
+The missingness in Province/State is described in detail in the data source chapter as we explained the data collection process. To iterate, due to different characteristics of each country or region, only Australia, Canada, China, dependencies of the Netherlands, the UK, France and Denmark are reported at the province/state level. This pattern of missingness might be able to give more detailed distribution of Covid-19 cases of some countries over others which might in turn gives interesting geographical patterns. 
+
+```{r}
+library(tidyverse)
+library(naniar)
+
+tidy_confirmed = read.csv("data/tidy_confirmed.csv", check.names = FALSE, stringsAsFactors = TRUE, na.strings="")
+tidy_confirmed = tidy_confirmed[c(2, 3, 4, 5, 6, 7)]
+
+tidy_recovered = read.csv("data/tidy_recovered.csv", check.names = FALSE, stringsAsFactors = TRUE, na.strings="")
+tidy_recovered = tidy_recovered[c(2, 3, 4, 5, 6, 7)]
+
+tidy_deaths = read.csv("data/tidy_deaths.csv", check.names = FALSE, stringsAsFactors = TRUE, na.strings="")
+tidy_deaths = tidy_deaths[c(2, 3, 4, 5, 6, 7)]
+
+#check missing values in 
+vis_miss(tidy_confirmed)
+vis_miss(tidy_recovered)
+vis_miss(tidy_deaths)
+```
+
+This is a very interesting view of the missing data. We used the fully joined data set. In addition to the expected missing value in the Province/State variable, we also observe about 7.06% of missing value in recovered cases. How did this happen? Did we just generate "missing" data? Well, obviously no. The missing values in the recovered variable in this fully joined data set to seem appear out of nowhere is due to the fact that in tidy_recovered data set, we have few countries/regions than the other two data sets. So after joining, we have countries that only have information about confirmed cases and deaths but not about recovered cases. For example, British Columbia province in Canada has no recovered case record. In fact, tidy_recovered only has one Canada record with no specification to which province/state it refers to or if it considers Canada as a whole.    
 
 ```{r}
 library(naniar)
