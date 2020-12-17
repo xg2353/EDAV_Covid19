@@ -10,7 +10,7 @@ library(tidyverse)
 library(directlabels)
 library(maps)
 library(maptools)
-library("ggmap")
+library(ggmap)
 library(plyr)
 ```
 
