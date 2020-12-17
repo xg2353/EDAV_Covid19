@@ -23,18 +23,18 @@ format_dates = function(x){
 #pivot datasets into tidy data and format dates as Data objects
 tidy_confirmed = confirmed %>% 
   pivot_longer(cols = !c("Province/State", "Country/Region", "Lat", "Long"), 
-               names_to = "Dates", values_to = "Confirmed", names_transform = list(Date = format_dates)) %>%
-write.csv(tidy_confirmed,"data/tidy_confirmed.csv", row.names = F)
+               names_to = "Dates", values_to = "Confirmed", names_transform = list(Date = format_dates)) 
+write.csv(tidy_confirmed,"data/tidy_confirmed.csv", row.names = FALSE)
 
 tidy_recovered = recovered %>% 
   pivot_longer(cols = !c("Province/State", "Country/Region", "Lat", "Long"), 
-               names_to = "Dates", values_to = "Recovered", names_transform = list(Date = format_dates)) %>%
-write.csv(tidy_recovered,"data/tidy_recovered.csv", row.names = F)
+               names_to = "Dates", values_to = "Recovered", names_transform = list(Date = format_dates)) 
+write.csv(tidy_recovered,"data/tidy_recovered.csv", row.names = FALSE)
 
 tidy_deaths = deaths %>% 
   pivot_longer(cols = !c("Province/State", "Country/Region", "Lat", "Long"), 
                names_to = "Dates", values_to = "Deaths", names_transform = list(Date = format_dates))
-write.csv(tidy_deaths,"data/tidy_deaths.csv", row.names = F)
+write.csv(tidy_deaths,"data/tidy_deaths.csv", row.names = FALSE)
 
 #join data sets
 df = join(tidy_confirmed, tidy_recovered)

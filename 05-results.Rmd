@@ -121,7 +121,7 @@ ggplot(data=deaths_all, aes(x=Long, y=Lat, group=Country.Region, colour=Deaths))
 
 The plot above is the dot plot of the world map representing number of deaths in each country. As we have discovered from the previous paragraph, we can see that the top three countries, the United States, India, and Brazil display bright blue dots. 
 
-```{r, echo = TRUE}
+```{r}
 
 merged_lastday <- merged_lastday %>%
   mutate(death_per_cases = Deaths/Confirmed)
