@@ -1,5 +1,5 @@
 --- 
-title: "Covid 19"
+title: "Global Covid-19 Pandemic in 2020"
 author: "Xue Gu, Matthew Lim, Ryan Owen Mcnally"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
