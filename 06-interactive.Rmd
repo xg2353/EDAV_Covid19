@@ -13,4 +13,6 @@ In this project, we created a nice animation that plots the number of monthly co
 
 The motivation for this simple yet meaningful animation is that, compared to static time series line chart of daily cases at the country level, following along with the growth or decrease of monthly global confirmed cases enables us to be more sensitive to fluctuation at a larger scale. It allows to detect any significant pattern changes in general, ignoring minor daily fluctuations. This could be useful for historical purposes since it captures the general trend of total global cases over the months.
 
+Our D3 visualization using tooltip is inspired by Mike Foster and Eric Huntley's work http://duspviz.mit.edu/d3-workshop/transitions-animation/. 
+
 Side Note, there is a little issue with the x scale on the x axis as it appears to have shifted to the left. It is a continuing issue for our interactive visualization in this chapter. Feel free to help us out! 
